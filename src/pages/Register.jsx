@@ -1,2 +1,84 @@
-import {useState} from 'react';import {Link,useNavigate} from 'react-router-dom';import {useShop} from '../context/ShopContext';import {AuthLayout} from './Login'
-export default function Register(){const {register}=useShop();const nav=useNavigate();const [form,setForm]=useState({name:'',email:'',password:'',password_confirmation:''});const [error,setError]=useState('');const [busy,setBusy]=useState(false);const submit=async e=>{e.preventDefault();setBusy(true);setError('');try{await register(form);nav('/')}catch(err){setError(Object.values(err.errors||{}).flat()[0]||err.message)}finally{setBusy(false)}};return <AuthLayout title="Create an account" subtitle="Save your details and make your next checkout easier."><form className="auth-form" onSubmit={submit}><label>Full name<input value={form.name} onChange={e=>setForm({...form,name:e.target.value})} required/></label><label>Email<input type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} required/></label><label>Password<input type="password" minLength="8" value={form.password} onChange={e=>setForm({...form,password:e.target.value})} required/></label><label>Confirm password<input type="password" minLength="8" value={form.password_confirmation} onChange={e=>setForm({...form,password_confirmation:e.target.value})} required/></label>{error&&<div className="form-error">{error}</div>}<button className="btn btn-dark full" disabled={busy}>{busy?'Creating...':'Create account →'}</button><p className="auth-switch">Already have an account? <Link to="/login">Sign in</Link></p></form></AuthLayout>}
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useShop } from "../context/ShopContext";
+import { AuthLayout } from "./Login";
+export default function Register() {
+  const { register } = useShop();
+  const nav = useNavigate();
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    password_confirmation: "",
+  });
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+  const submit = async (e) => {
+    e.preventDefault();
+    setBusy(true);
+    setError("");
+    try {
+      await register(form);
+      nav("/");
+    } catch (err) {
+      setError(Object.values(err.errors || {}).flat()[0] || err.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <AuthLayout
+      title="Create an account"
+      subtitle="Save your details and make your next checkout easier."
+    >
+      <form className="auth-form" onSubmit={submit}>
+        <label>
+          Full name
+          <input
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            required
+          />
+        </label>
+        <label>
+          Email
+          <input
+            type="email"
+            value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            required
+          />
+        </label>
+        <label>
+          Password
+          <input
+            type="password"
+            minLength="8"
+            value={form.password}
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+            required
+          />
+        </label>
+        <label>
+          Confirm password
+          <input
+            type="password"
+            minLength="8"
+            value={form.password_confirmation}
+            onChange={(e) =>
+              setForm({ ...form, password_confirmation: e.target.value })
+            }
+            required
+          />
+        </label>
+        {error && <div className="form-error">{error}</div>}
+        <button className="btn btn-dark full" disabled={busy}>
+          {busy ? "Creating..." : "Create account →"}
+        </button>
+        <p className="auth-switch">
+          Already have an account? <Link to="/login">Sign in</Link>
+        </p>
+      </form>
+    </AuthLayout>
+  );
+}

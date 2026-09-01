@@ -1,3 +1,118 @@
-import {useEffect,useState} from 'react';import {Link} from 'react-router-dom';import {api} from '../services/api';import {money} from '../utils/format'
-export default function AdminOverview(){const [data,setData]=useState(null);const [error,setError]=useState('');useEffect(()=>{api.admin.summary().then(setData).catch(e=>setError(e.message))},[]);if(error)return <AdminError text={error}/>;if(!data)return <div className="admin-loading">Loading dashboard…</div>;return <section className="admin-content"><div className="admin-hero"><div><span className="eyebrow">OVERVIEW</span><h1>Good to see you, admin.</h1><p>Monitor your shop, customers and orders from one clean control center.</p></div><Link className="btn btn-dark" to="/products">Open storefront →</Link></div><div className="stat-grid">{[['Revenue',money(data.revenue),'↗'],['Orders',data.orders,''],['Customers',data.users,''],['Products',data.products,'']].map(([a,b,c])=><div className="stat-card" key={a}><span>{a}</span><strong>{b}</strong><small>{c||'Live data'}</small></div>)}</div><div className="admin-columns"><div className="admin-panel"><div className="panel-head"><div><span className="eyebrow">RECENT</span><h3>Recent orders</h3></div><Link to="/admin/orders">View all →</Link></div>{data.recent_orders?.length?data.recent_orders.map(o=><div className="admin-list-row" key={o.id}><div><strong>{o.number}</strong><span>{o.customer_name || 'Guest'} · {new Date(o.created_at).toLocaleDateString()}</span></div><div><strong>{money(o.total)}</strong><span className={`status ${o.status}`}>{o.status}</span></div></div>):<div className="admin-empty">No orders yet.</div>}</div><div className="admin-panel"><div className="panel-head"><div><span className="eyebrow">SYSTEM</span><h3>Security posture</h3></div></div><div className="security-list"><div><span>CSRF protection</span><b>Enabled</b></div><div><span>HttpOnly session</span><b>Enabled</b></div><div><span>SameSite cookie</span><b>Enabled</b></div><div><span>Security headers</span><b>Enabled</b></div><div><span>Admin authorization</span><b>Enabled</b></div></div></div></div></section>}
-function AdminError({text}){return <div className="admin-error"><strong>{text}</strong><p>Make sure the Laravel API is running and your account has the admin role.</p></div>}
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { api } from "../services/api";
+import { money } from "../utils/format";
+export default function AdminOverview() {
+  const [data, setData] = useState(null);
+  const [error, setError] = useState("");
+  useEffect(() => {
+    api.admin
+      .summary()
+      .then(setData)
+      .catch((e) => setError(e.message));
+  }, []);
+  if (error) return <AdminError text={error} />;
+  if (!data) return <div className="admin-loading">Loading dashboard…</div>;
+  return (
+    <section className="admin-content">
+      <div className="admin-hero">
+        <div>
+          <span className="eyebrow">OVERVIEW</span>
+          <h1>Good to see you, admin.</h1>
+          <p>
+            Monitor your shop, customers and orders from one clean control
+            center.
+          </p>
+        </div>
+        <Link className="btn btn-dark" to="/products">
+          Open storefront →
+        </Link>
+      </div>
+      <div className="stat-grid">
+        {[
+          ["Revenue", money(data.revenue), "↗"],
+          ["Orders", data.orders, ""],
+          ["Customers", data.users, ""],
+          ["Products", data.products, ""],
+        ].map(([a, b, c]) => (
+          <div className="stat-card" key={a}>
+            <span>{a}</span>
+            <strong>{b}</strong>
+            <small>{c || "Live data"}</small>
+          </div>
+        ))}
+      </div>
+      <div className="admin-columns">
+        <div className="admin-panel">
+          <div className="panel-head">
+            <div>
+              <span className="eyebrow">RECENT</span>
+              <h3>Recent orders</h3>
+            </div>
+            <Link to="/admin/orders">View all →</Link>
+          </div>
+          {data.recent_orders?.length ? (
+            data.recent_orders.map((o) => (
+              <div className="admin-list-row" key={o.id}>
+                <div>
+                  <strong>{o.number}</strong>
+                  <span>
+                    {o.customer_name || "Guest"} ·{" "}
+                    {new Date(o.created_at).toLocaleDateString()}
+                  </span>
+                </div>
+                <div>
+                  <strong>{money(o.total)}</strong>
+                  <span className={`status ${o.status}`}>{o.status}</span>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="admin-empty">No orders yet.</div>
+          )}
+        </div>
+        <div className="admin-panel">
+          <div className="panel-head">
+            <div>
+              <span className="eyebrow">SYSTEM</span>
+              <h3>Security posture</h3>
+            </div>
+          </div>
+          <div className="security-list">
+            <div>
+              <span>CSRF protection</span>
+              <b>Enabled</b>
+            </div>
+            <div>
+              <span>HttpOnly session</span>
+              <b>Enabled</b>
+            </div>
+            <div>
+              <span>SameSite cookie</span>
+              <b>Enabled</b>
+            </div>
+            <div>
+              <span>Security headers</span>
+              <b>Enabled</b>
+            </div>
+            <div>
+              <span>Admin authorization</span>
+              <b>Enabled</b>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+function AdminError({ text }) {
+  return (
+    <div className="admin-error">
+      <strong>{text}</strong>
+      <p>
+        Make sure the Laravel API is running and your account has the admin
+        role.
+      </p>
+    </div>
+  );
+}

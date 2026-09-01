@@ -1,2 +1,64 @@
-import {useEffect,useState} from 'react';import {api} from '../services/api'
-export default function AdminUsers(){const [users,setUsers]=useState([]);useEffect(()=>{api.admin.users().then(d=>setUsers(d.data))},[]);const remove=async id=>{if(!confirm('Delete this customer account?'))return;await api.admin.deleteUser(id);setUsers(xs=>xs.filter(u=>u.id!==id))};return <section className="admin-content"><div className="admin-page-head"><div><span className="eyebrow">CUSTOMERS</span><h1>Users</h1><p>Manage customer accounts and administrator access.</p></div></div><div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>User</th><th>Email</th><th>Role</th><th>Joined</th><th></th></tr></thead><tbody>{users.map(u=><tr key={u.id}><td><div className="table-user"><span>{u.name.charAt(0)}</span><strong>{u.name}</strong></div></td><td>{u.email}</td><td><span className={`role ${u.role}`}>{u.role}</span></td><td>{new Date(u.created_at).toLocaleDateString()}</td><td>{u.role!=='admin'&&<button className="danger-link" onClick={()=>remove(u.id)}>Delete</button>}</td></tr>)}</tbody></table></div></section>}
+import { useEffect, useState } from "react";
+import { api } from "../services/api";
+export default function AdminUsers() {
+  const [users, setUsers] = useState([]);
+  useEffect(() => {
+    api.admin.users().then((d) => setUsers(d.data));
+  }, []);
+  const remove = async (id) => {
+    if (!confirm("Delete this customer account?")) return;
+    await api.admin.deleteUser(id);
+    setUsers((xs) => xs.filter((u) => u.id !== id));
+  };
+  return (
+    <section className="admin-content">
+      <div className="admin-page-head">
+        <div>
+          <span className="eyebrow">CUSTOMERS</span>
+          <h1>Users</h1>
+          <p>Manage customer accounts and administrator access.</p>
+        </div>
+      </div>
+      <div className="admin-table-wrap">
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Joined</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map((u) => (
+              <tr key={u.id}>
+                <td>
+                  <div className="table-user">
+                    <span>{u.name.charAt(0)}</span>
+                    <strong>{u.name}</strong>
+                  </div>
+                </td>
+                <td>{u.email}</td>
+                <td>
+                  <span className={`role ${u.role}`}>{u.role}</span>
+                </td>
+                <td>{new Date(u.created_at).toLocaleDateString()}</td>
+                <td>
+                  {u.role !== "admin" && (
+                    <button
+                      className="danger-link"
+                      onClick={() => remove(u.id)}
+                    >
+                      Delete
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+}

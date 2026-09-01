@@ -1,14 +1,14 @@
-import { Link, NavLink, useNavigate } from 'react-router-dom'
-import { useShop } from '../context/ShopContext'
-import Icon from './Icon'
-import { useState } from 'react'
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { useShop } from "../context/ShopContext";
+import Icon from "./Icon";
+import { useState } from "react";
 
 export default function Navbar() {
-  const { cart, user, logout } = useShop()
-  const [open, setOpen] = useState(false)
-  const navigate = useNavigate()
+  const { cart, user, logout } = useShop();
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
-  const closeMenu = () => setOpen(false)
+  const closeMenu = () => setOpen(false);
 
   return (
     <header className="site-header">
@@ -20,14 +20,13 @@ export default function Navbar() {
       </div>
 
       <div className="nav-wrap">
-
         {/* Logo */}
         <Link to="/" className="brand">
           INSAV<span>SHOP</span>
         </Link>
 
         {/* Navigation */}
-        <nav className={open ? 'nav open' : 'nav'}>
+        <nav className={open ? "nav open" : "nav"}>
           <NavLink to="/" onClick={closeMenu}>
             Home
           </NavLink>
@@ -36,35 +35,25 @@ export default function Navbar() {
             Shop
           </NavLink>
 
-          <Link
-            to="/products?category=electronics"
-            onClick={closeMenu}
-          >
+          <Link to="/products?category=electronics" onClick={closeMenu}>
             Electronics
           </Link>
 
-          <Link
-            to="/products?category=men's clothing"
-            onClick={closeMenu}
-          >
+          <Link to="/products?category=men's clothing" onClick={closeMenu}>
             Men
           </Link>
 
-          <Link
-            to="/products?category=women's clothing"
-            onClick={closeMenu}
-          >
+          <Link to="/products?category=women's clothing" onClick={closeMenu}>
             Women
           </Link>
         </nav>
 
         {/* Actions */}
         <div className="nav-actions">
-
           {/* Search */}
           <button
             className="icon-btn desktop-search"
-            onClick={() => navigate('/products')}
+            onClick={() => navigate("/products")}
             aria-label="Search"
           >
             <Icon name="search" />
@@ -75,16 +64,16 @@ export default function Navbar() {
             <>
               <button
                 className="account-name"
-                onClick={() => navigate('/account')}
+                onClick={() => navigate("/account")}
               >
-                {user.name.split(' ')[0]}
+                {user.name.split(" ")[0]}
               </button>
 
               {/* Admin */}
-              {user.role === 'admin' && (
+              {user.role === "admin" && (
                 <button
                   className="admin-nav-btn"
-                  onClick={() => navigate('/admin')}
+                  onClick={() => navigate("/admin")}
                 >
                   Admin
                 </button>
@@ -94,8 +83,8 @@ export default function Navbar() {
               <button
                 className="icon-btn"
                 onClick={() => {
-                  logout()
-                  navigate('/')
+                  logout();
+                  navigate("/");
                 }}
                 aria-label="Logout"
               >
@@ -105,7 +94,7 @@ export default function Navbar() {
           ) : (
             <button
               className="icon-btn"
-              onClick={() => navigate('/login')}
+              onClick={() => navigate("/login")}
               aria-label="Account"
             >
               <Icon name="user" />
@@ -115,9 +104,7 @@ export default function Navbar() {
           {/* Cart */}
           <Link className="cart-link" to="/cart">
             <Icon name="bag" />
-            <span className="cart-count">
-              {cart.count}
-            </span>
+            <span className="cart-count">{cart.count}</span>
           </Link>
 
           {/* Mobile menu */}
@@ -126,11 +113,10 @@ export default function Navbar() {
             onClick={() => setOpen(!open)}
             aria-label="Toggle menu"
           >
-            <Icon name={open ? 'close' : 'menu'} />
+            <Icon name={open ? "close" : "menu"} />
           </button>
-
         </div>
       </div>
     </header>
-  )
+  );
 }

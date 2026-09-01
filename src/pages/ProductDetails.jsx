@@ -1,8 +1,105 @@
-import { useEffect,useState } from 'react'
-import { Link,useParams } from 'react-router-dom'
-import { api } from '../services/api'
-import { useShop } from '../context/ShopContext'
-import ProductGrid from '../components/ProductGrid'
-import Icon from '../components/Icon'
-import { categoryLabel,money } from '../utils/format'
-export default function ProductDetails(){const {id}=useParams();const {addToCart}=useShop();const [product,setProduct]=useState(null);const [related,setRelated]=useState([]);const [qty,setQty]=useState(1);const [loading,setLoading]=useState(true);useEffect(()=>{setLoading(true);Promise.all([api.product(id),api.related(id)]).then(([p,r])=>{setProduct(p.data);setRelated(r.data)}).finally(()=>setLoading(false))},[id]);if(loading)return <section className="page-section"><div className="detail-skeleton"><div className="skeleton image"/><div><div className="skeleton line"/><div className="skeleton line"/><div className="skeleton line short"/></div></div></section>;if(!product)return <section className="page-section"><div className="empty-state"><h3>Product unavailable</h3><Link to="/products" className="btn btn-dark">Back to shop</Link></div></section>;return <><section className="page-section detail-page"><Link to="/products" className="back-link">← Back to shop</Link><div className="detail-grid"><div className="detail-image"><img src={product.image} alt={product.title}/></div><div className="detail-copy"><span className="eyebrow">{categoryLabel(product.category)}</span><h1>{product.title}</h1><div className="detail-rating"><Icon name="star" size={17}/><strong>{product.rating?.rate?.toFixed(1)}</strong><span>({product.rating?.count} reviews)</span></div><div className="detail-price">{money(product.price)}</div><p>{product.description}</p><div className="buy-row"><div className="qty"><button onClick={()=>setQty(Math.max(1,qty-1))}><Icon name="minus" size={16}/></button><span>{qty}</span><button onClick={()=>setQty(Math.min(99,qty+1))}><Icon name="plus" size={16}/></button></div><button className="btn btn-dark grow" onClick={()=>addToCart(product.id,qty)}>Add to cart <span>→</span></button></div><div className="detail-note"><b>✓</b><span>Secure checkout · Free shipping over $100 · 30-day returns</span></div></div></div></section><section className="page-section related"><div className="section-heading"><div><span className="eyebrow">YOU MAY ALSO LIKE</span><h2>More from this category</h2></div></div><ProductGrid products={related}/></section></>}
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { api } from "../services/api";
+import { useShop } from "../context/ShopContext";
+import ProductGrid from "../components/ProductGrid";
+import Icon from "../components/Icon";
+import { categoryLabel, money } from "../utils/format";
+export default function ProductDetails() {
+  const { id } = useParams();
+  const { addToCart } = useShop();
+  const [product, setProduct] = useState(null);
+  const [related, setRelated] = useState([]);
+  const [qty, setQty] = useState(1);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    setLoading(true);
+    Promise.all([api.product(id), api.related(id)])
+      .then(([p, r]) => {
+        setProduct(p.data);
+        setRelated(r.data);
+      })
+      .finally(() => setLoading(false));
+  }, [id]);
+  if (loading)
+    return (
+      <section className="page-section">
+        <div className="detail-skeleton">
+          <div className="skeleton image" />
+          <div>
+            <div className="skeleton line" />
+            <div className="skeleton line" />
+            <div className="skeleton line short" />
+          </div>
+        </div>
+      </section>
+    );
+  if (!product)
+    return (
+      <section className="page-section">
+        <div className="empty-state">
+          <h3>Product unavailable</h3>
+          <Link to="/products" className="btn btn-dark">
+            Back to shop
+          </Link>
+        </div>
+      </section>
+    );
+  return (
+    <>
+      <section className="page-section detail-page">
+        <Link to="/products" className="back-link">
+          ← Back to shop
+        </Link>
+        <div className="detail-grid">
+          <div className="detail-image">
+            <img src={product.image} alt={product.title} />
+          </div>
+          <div className="detail-copy">
+            <span className="eyebrow">{categoryLabel(product.category)}</span>
+            <h1>{product.title}</h1>
+            <div className="detail-rating">
+              <Icon name="star" size={17} />
+              <strong>{product.rating?.rate?.toFixed(1)}</strong>
+              <span>({product.rating?.count} reviews)</span>
+            </div>
+            <div className="detail-price">{money(product.price)}</div>
+            <p>{product.description}</p>
+            <div className="buy-row">
+              <div className="qty">
+                <button onClick={() => setQty(Math.max(1, qty - 1))}>
+                  <Icon name="minus" size={16} />
+                </button>
+                <span>{qty}</span>
+                <button onClick={() => setQty(Math.min(99, qty + 1))}>
+                  <Icon name="plus" size={16} />
+                </button>
+              </div>
+              <button
+                className="btn btn-dark grow"
+                onClick={() => addToCart(product.id, qty)}
+              >
+                Add to cart <span>→</span>
+              </button>
+            </div>
+            <div className="detail-note">
+              <b>✓</b>
+              <span>
+                Secure checkout · Free shipping over $100 · 30-day returns
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section className="page-section related">
+        <div className="section-heading">
+          <div>
+            <span className="eyebrow">YOU MAY ALSO LIKE</span>
+            <h2>More from this category</h2>
+          </div>
+        </div>
+        <ProductGrid products={related} />
+      </section>
+    </>
+  );
+}

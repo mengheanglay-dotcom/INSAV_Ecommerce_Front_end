@@ -1,6 +1,74 @@
-import { useEffect,useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
-import { api } from '../services/api'
-import ProductGrid from '../components/ProductGrid'
-import { categoryLabel } from '../utils/format'
-export default function Products(){const [params,setParams]=useSearchParams();const [products,setProducts]=useState([]);const [cats,setCats]=useState([]);const [loading,setLoading]=useState(true);const search=params.get('search')||'';const category=params.get('category')||'';const sort=params.get('sort')||'';useEffect(()=>{setLoading(true);api.products({search,category,sort}).then(d=>setProducts(d.data)).finally(()=>setLoading(false));api.categories().then(d=>setCats(d.data))},[search,category,sort]);const update=(key,value)=>{const next=new URLSearchParams(params);if(value)next.set(key,value);else next.delete(key);setParams(next)};return <section className="page-section products-page"><div className="catalog-head"><div><span className="eyebrow">THE COLLECTION</span><h1>Shop all products</h1><p>{products.length} pieces, selected for everyday use.</p></div><div className="search-box"><input value={search} onChange={e=>update('search',e.target.value)} placeholder="Search products..."/><span>⌕</span></div></div><div className="catalog-toolbar"><div className="chips"><button className={!category?'chip active':'chip'} onClick={()=>update('category','')}>All</button>{cats.map(c=><button className={category===c?'chip active':'chip'} key={c} onClick={()=>update('category',c)}>{categoryLabel(c)}</button>)}</div><select value={sort} onChange={e=>update('sort',e.target.value)}><option value="">Featured</option><option value="rating">Top rated</option><option value="price_asc">Price: low to high</option><option value="price_desc">Price: high to low</option><option value="name">Name</option></select></div><ProductGrid products={products} loading={loading}/></section>}
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { api } from "../services/api";
+import ProductGrid from "../components/ProductGrid";
+import { categoryLabel } from "../utils/format";
+export default function Products() {
+  const [params, setParams] = useSearchParams();
+  const [products, setProducts] = useState([]);
+  const [cats, setCats] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const search = params.get("search") || "";
+  const category = params.get("category") || "";
+  const sort = params.get("sort") || "";
+  useEffect(() => {
+    setLoading(true);
+    api
+      .products({ search, category, sort })
+      .then((d) => setProducts(d.data))
+      .finally(() => setLoading(false));
+    api.categories().then((d) => setCats(d.data));
+  }, [search, category, sort]);
+  const update = (key, value) => {
+    const next = new URLSearchParams(params);
+    if (value) next.set(key, value);
+    else next.delete(key);
+    setParams(next);
+  };
+  return (
+    <section className="page-section products-page">
+      <div className="catalog-head">
+        <div>
+          <span className="eyebrow">THE COLLECTION</span>
+          <h1>Shop all products</h1>
+          <p>{products.length} pieces, selected for everyday use.</p>
+        </div>
+        <div className="search-box">
+          <input
+            value={search}
+            onChange={(e) => update("search", e.target.value)}
+            placeholder="Search products..."
+          />
+          <span>⌕</span>
+        </div>
+      </div>
+      <div className="catalog-toolbar">
+        <div className="chips">
+          <button
+            className={!category ? "chip active" : "chip"}
+            onClick={() => update("category", "")}
+          >
+            All
+          </button>
+          {cats.map((c) => (
+            <button
+              className={category === c ? "chip active" : "chip"}
+              key={c}
+              onClick={() => update("category", c)}
+            >
+              {categoryLabel(c)}
+            </button>
+          ))}
+        </div>
+        <select value={sort} onChange={(e) => update("sort", e.target.value)}>
+          <option value="">Featured</option>
+          <option value="rating">Top rated</option>
+          <option value="price_asc">Price: low to high</option>
+          <option value="price_desc">Price: high to low</option>
+          <option value="name">Name</option>
+        </select>
+      </div>
+      <ProductGrid products={products} loading={loading} />
+    </section>
+  );
+}
